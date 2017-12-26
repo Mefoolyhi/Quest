@@ -1,5 +1,10 @@
 package com.samsung.itschool.quest;
 
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
 /**
  * Created by User on 24.12.2017.
  */
@@ -139,11 +144,28 @@ public class Story {
 
     }
 
-    public void go(int num) {
-        current_situation = current_situation.direction[num - 1];
+    public void go(int num, Story story, Button btn3, Characteer hero, TextView tv_head, TextView tv_main) {
+        if (!story.isEnd(num)) {
+            current_situation = current_situation.direction[num - 1];
+            btn3.setVisibility(View.GONE);
+            hero.A += story.current_situation.dA;
+            hero.K += story.current_situation.dK;
+            hero.P += story.current_situation.dR;
+            tv_head.setText("Активы: " + hero.A + "\nРепутация: " + hero.P + "\nКарьера: " + hero.K);
+            tv_main.setText(story.current_situation.text);
+        }
+        else{
+            current_situation = current_situation.direction[num - 1];
+            hero.A += story.current_situation.dA;
+            hero.K += story.current_situation.dK;
+            hero.P += story.current_situation.dR;
+            tv_main.setText(story.current_situation.text + "\nАктивы: " + hero.A + "\nРепутация: " + hero.P + "\nКарьера: " + hero.K);
+            tv_head.setText("The end");
+        }
+
     }
 
-    public boolean isEnd() {
-        return current_situation.direction.length == 0;
+    private boolean isEnd(int num) {
+        return current_situation.direction[num - 1].direction.length == 0;
     }
 }

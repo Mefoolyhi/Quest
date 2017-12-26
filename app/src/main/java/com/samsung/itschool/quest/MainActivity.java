@@ -1,81 +1,89 @@
 package com.samsung.itschool.quest;
 
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 public class MainActivity extends AppCompatActivity {
-        private Story story;
-        private TextView tv_main;
-        private LinearLayout ll;
-        private TextView tv_head;
+    private Story story;
+    private TextView tv_main;
+    private TextView tv_head;
+    private Button btn1, btn2, btn3;
+    private Characteer hero;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv_main = findViewById(R.id.tv_main);
-        ll = findViewById(R.id.ll);
         tv_head = findViewById(R.id.tv_head);
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
 
-        LetStart();
 
-    }
-
-    private int choice;
-    protected void LetStart(){
         story = new Story();
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        Characteer hero = new Characteer();
-                do{
-                    hero.A += story.current_situation.dA;
-                    hero.K += story.current_situation.dK;
-                    hero.P += story.current_situation.dR;
-                    tv_head.setText("Активы: " + hero.A + "Репутация: " +hero.P + "Карьера: " + hero.K);
-                    tv_main.setText(story.current_situation.text);
-                    for (int i = 1; i <= story.current_situation.direction.length; i++){
-                        Button btn = new Button(this);
-                        btn.setText(i);
-                        ll.addView(btn,layoutParams);
-                        btn.setWidth(1);
-                        btn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Button btn = (Button)v;
-                                choice = Integer.parseInt(btn.getText().toString());
-                            }
-                        });
-                    }
-
-                    story.go(choice);
-                }while (!story.isEnd());
-        tv_head.setText("Ещё раз?");
-        Button btnYes = new Button(this);
-        btnYes.setText("Да");
-        ll.addView(btnYes,layoutParams);
-        Button btnNo = new Button(this);
-        btnYes.setText("Нет");
-        btnNo.setWidth(1);
-        btnYes.setWidth(1);
-        ll.addView(btnNo,layoutParams);
-        btnNo.setOnClickListener(new View.OnClickListener() {
+        hero = new Characteer();
+        tv_head.setText("Активы: " + hero.A + "\nРепутация: " + hero.P + "\nКарьера: " + hero.K);
+        tv_main.setText(story.current_situation.text);
+        btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                story.go(1, story, btn3, hero, tv_head, tv_main);
+                if (tv_head.getText().toString().equals("The end")){
+                    btn1.setEnabled(false);
+                    btn2.setEnabled(false);
+                    Again();
 
+                }
             }
         });
-        btnYes.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LetStart();
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                story.go(2,story, btn3, hero, tv_head, tv_main);
+                if (tv_head.getText().toString().equals("The end")){
+                    btn1.setEnabled(false);
+                    btn2.setEnabled(false);
+                    Again();
 
-                    }
                 }
-        );
+            }
+        });
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                story.go(3,story, btn3, hero, tv_head, tv_main);
+            }
+        });
+
     }
+    private void Again(){
+        Button btn = new Button(this);
+        LinearLayout ll = findViewById(R.id.ll);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        btn.setLayoutParams(layoutParams);
+        btn.setText("Ещё раз");
+        ll.addView(btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                story = new Story();
+                hero = new Characteer();
+                tv_head.setText("Активы: " + hero.A + "\nРепутация: " + hero.P + "\nКарьера: " + hero.K);
+                tv_main.setText(story.current_situation.text);
+                btn3.setVisibility(View.VISIBLE);
+                btn1.setEnabled(true);
+                btn2.setEnabled(true);
+                Button btn = (Button) v;
+                btn.setVisibility(View.GONE);
+            }
+        });
+    }
+
+
 }
