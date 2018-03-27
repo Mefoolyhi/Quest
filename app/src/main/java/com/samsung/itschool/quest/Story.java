@@ -140,6 +140,8 @@ public class Story {
         Wait.direction[0] = Accept;
         Wait.direction[1] = Fired;
         Accept.direction[1] = Beer;
+        Beer.direction[0] = DoubleYes;
+        Beer.direction[1] = No;
         Accept.direction[0] = Fired;
 
     }
